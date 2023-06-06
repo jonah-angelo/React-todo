@@ -2,32 +2,41 @@ import { useState } from 'react'
 import "./index.css"
 
 function App() {
+  const [newItem, setNewItem] = useState("")
+  const [todos, setTodos] = useState([])
+
+  function handleSubmit(e){
+    e.preventDefault()
+
+    setTodos((currentTodos) => {
+      return [
+        ...currentTodos,
+        {id: crypto.randomUUID(), title: newItem, completed: false },
+      ]
+    })
+    setNewItem("")
+  }
+
   return (
     <>
-      <form className='new-item-form'>
+      <form onSubmit={handleSubmit} className='new-item-form'>
         <div className="form-row">
           <label> New item</label>
-          <input type='item' id='item' />
+          <input value={newItem} onChange={e => setNewItem(e.target.value)} type='text' id='item' />
         </div>
+        <button className='btn'>Add</button>
       </form>
       <h1 className='header'>Todo List</h1>
       <ul className='list'>
-        <li>
-          <label>
-            <input type='checkbox'>
-              item 1
-            </input>
-            <button className='btn btn-danger'>Delete</button>
+        {todos.map (todo => {
+          return <li key={todo.id}>
+            <label>
+            <input type='checkbox' checked={todo.completed} />
+            {todo.title}
           </label>
-        </li>
-        <li>
-          <label>
-            <input type='checkbox'>
-              item 1
-            </input>
             <button className='btn btn-danger'>Delete</button>
-          </label>
-        </li>
+          </li>
+        })}
       </ul>
     </>
   )
